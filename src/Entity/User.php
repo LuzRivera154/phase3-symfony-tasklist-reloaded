@@ -39,19 +39,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'user')]
     private Collection $Task;
 
-    /**
-     * @var Collection<int, Folder>
-     */
-    #[ORM\OneToMany(targetEntity: Folder::class, mappedBy: 'user')]
-    private Collection $folders;
-
     #[ORM\Column(length: 255)]
     private ?string $username = null;
 
     public function __construct()
     {
         $this->Task = new ArrayCollection();
-        $this->folders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,6 +110,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    /**
+     * @see Username
+     */
 
     /**
      * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
@@ -124,7 +120,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
 
         return $data;
     }
@@ -153,36 +149,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($task->getUser() === $this) {
                 $task->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Folder>
-     */
-    public function getFolders(): Collection
-    {
-        return $this->folders;
-    }
-
-    public function addFolder(Folder $folder): static
-    {
-        if (!$this->folders->contains($folder)) {
-            $this->folders->add($folder);
-            $folder->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFolder(Folder $folder): static
-    {
-        if ($this->folders->removeElement($folder)) {
-            // set the owning side to null (unless already changed)
-            if ($folder->getUser() === $this) {
-                $folder->setUser(null);
             }
         }
 

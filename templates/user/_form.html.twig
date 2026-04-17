@@ -1,0 +1,13 @@
+{{ form_start(form) }}
+<div class="flex flex-col gap-5">
+	<label for="{{ form.email.vars.id }}" class="label">Email :</label>
+	{{ form_widget(form.email,{'attr':{class:"input", placeholder:"votre@email.com" }}) }}
+	<label for="{{ form.username.vars.id }}" class="label" >Nom d'utilisateur :</label>
+	{{ form_widget(form.username,{'attr':{class:"input", placeholder:"nom_utilisateur" }}) }}
+	<label for="{{ form.password.vars.id }}" class="label">Password :</label>
+	{{ form_widget(form.password,{'attr':{class:"input", placeholder:"*****" }}) }}
+	<button class="btn rounded-xl bg bg-black text-white text-xl p-3 mt-2 cursor-pointer "
+    >{{ button_label|default('Inscribirse') }}</button>
+</div>
+
+{{ form_end(form) }}

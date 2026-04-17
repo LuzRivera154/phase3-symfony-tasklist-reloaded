@@ -1,3 +1,15 @@
+@import "tailwindcss";
+
 body {
-    background-color: skyblue;
+    background-color: #e8efff;
+    font-family: "Outfit", sans-serif;
+}
+.input{
+    background-color: rgba(177, 175, 175, 0.151);
+    padding: .5rem;
+    border-radius: .5rem;
+}
+.label{
+    font-size: 1.1rem;
+    text-decoration: underline solid rgba(49, 43, 51, 0.349) 2px;
 }

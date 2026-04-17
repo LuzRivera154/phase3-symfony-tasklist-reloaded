@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register
+{% endblock %}
+
+{% block body %}
+	<div class="grid place-items-center min-h-screen">
+		<div class=" bg-white rounded-md p-7  w-1/2 ">
+			<h1 class="text-2xl  pb-5 ">Gestion de Tâches</h1>
+			<p class="text-xl pb-5">Organisez votre journée efficacement</p>
+			{{ include('user/_form.html.twig') }}
+			<a href="{{ path('app_user_index') }}">back to list</a>
+		</div>
+	</div>
+{% endblock %}
