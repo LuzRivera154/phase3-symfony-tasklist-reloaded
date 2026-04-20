@@ -13,3 +13,22 @@ body {
     font-size: 1.1rem;
     text-decoration: underline solid rgba(49, 43, 51, 0.349) 2px;
 }
+.btn-nav{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    border: 1px solid rgba(172, 170, 170, 0.514);
+    padding: .5rem 1rem;
+    border-radius: 10px;
+}
+.select{
+    background: #F3F3F5; 
+    border-radius: 3px;
+    border: 1px solid rgba(172, 170, 170, 0.178);
+    padding:10px 25px;
+    cursor: pointer;
+    
+}
+.transitionEffect{
+    transition:all .2s ease-in-out;
+}

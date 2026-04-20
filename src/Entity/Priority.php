@@ -15,14 +15,19 @@ class Priority
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, unique:true)]
-    private ?string $level = null;
-
     /**
      * @var Collection<int, Task>
      */
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'priority')]
     private Collection $Task;
+
+    #[ORM\Column(length: 255, unique:true)]
+    private ?string $name = null;
+
+    #[ORM\Column(unique:true)]
+    private ?int $importance = null;
+
+
 
     public function __construct()
     {
@@ -33,19 +38,6 @@ class Priority
     {
         return $this->id;
     }
-
-    public function getLevel(): ?string
-    {
-        return $this->level;
-    }
-
-    public function setLevel(string $level): static
-    {
-        $this->level = $level;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Task>
      */
@@ -75,4 +67,30 @@ class Priority
 
         return $this;
     }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getImportance(): ?int
+    {
+        return $this->importance;
+    }
+
+    public function setImportance(int $importance): static
+    {
+        $this->importance = $importance;
+
+        return $this;
+    }
+
+
 }

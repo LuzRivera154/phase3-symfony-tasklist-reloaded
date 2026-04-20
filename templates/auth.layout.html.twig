@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Auth
+{% endblock %}
+{%  block body %}
+	<div class="grid place-items-center min-h-screen">
+		<div class=" bg-white rounded-md p-7  w-1/3 ">
+			<h1 class="text-2xl  pb-5 ">Gestion de Tâches</h1>
+			<p class="text-xl pb-5 text-gray-500">Organisez votre journée efficacement</p>
+			<turbo-frame id="auth-frame" target="_top">
+				<div class="bg-gray-200 flex justify-center rounded-4xl mb-3">
+					<a href="{{path('app_login')}}" class="flex-1 text-center py-2 rounded-full  z-10
+																																												               {{ app.current_route == 'app_login' ? 'bg-white shadow-sm text-gray-900 font-semibold'
+																																												               : 'text-gray-500' }}">
+						Conexion
+					</a>
+					<a href="{{path('app_user_new')}}" class="flex-1 text-center py-2 rounded-full  z-10
+																																						               {{ app.current_route == 'app_user_new' ? 'bg-white shadow-sm text-gray-900 font-semibold'
+																																						               : 'text-gray-500' }}">
+
+						Inscripcion</a>
+				</div>
+				{% block auth_content %}{% endblock %}
+			</turbo-frame>
+		</div>
+	</div>
+{% endblock %}

@@ -1,4 +1,14 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="flex flex-col gap-5">
+	<label for="{{form.title.vars.id}}" class="label">Titre de la tâche</label>
+	{{ form_widget(form.title,{'attr':{class:"input", placeholder:"Faire les courses"}}) }}
+	<label for="{{form.priority.vars.id}}" class="label">Priorité</label>
+	{{ form_widget(form.priority,{'attr':{class:"input"}}) }}
+	<label for="{{form.Folder.vars.id}}" class="label">Dossier (optionnel)</label>
+	{{ form_widget(form.Folder,{'attr':{class:"input"}}) }}
+	<div class="flex justify-end gap-3">
+		<a href="{{ path('app_task_index') }}" class="btn border border-gray-300  rounded-xl text-xl p-3 mt-2 cursor-pointer hover:border-gray-500 hover:bg-gray-50 transitionEffect">Annuler</a>
+		<button class="btn rounded-xl bg bg-black border border-gray-400  text-white text-xl p-3 mt-2 cursor-pointer hover:border-gray-200 hover:bg-gray-900 transitionEffect">{{ button_label|default('Créer') }}</button>
+	</div>
+</div>
 {{ form_end(form) }}

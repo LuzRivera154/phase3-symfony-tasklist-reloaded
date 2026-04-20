@@ -1,39 +1,72 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Task index{% endblock %}
+{% block title %}Task
+{% endblock %}
 
 {% block body %}
-    <h1>Task index</h1>
+	<div class="grid grid-cols-[minmax(200px,300px)_1fr] min-h-screen">
+		<aside class="bg-[#f9fafb] p-5 flex- gap-y-7 border-r-3 border-gray-200 md:flex-col ">
+			<div class="bg-black text-white flex p-3 gap-3 items-center justify-center rounded-xl">
+				<i class="fa-solid fa-house"></i>
+				<p>Toutes les tâches</p>
+			</div>
+			<p class="text-gray-500 my-4">Dossiers</p>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Status</th>
-                <th>IsPinned</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for task in tasks %}
-            <tr>
-                <td>{{ task.id }}</td>
-                <td>{{ task.title }}</td>
-                <td>{{ task.status }}</td>
-                <td>{{ task.isPinned ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('app_task_show', {'id': task.id}) }}">show</a>
-                    <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+			{#DOSSIER#}
 
-    <a href="{{ path('app_task_new') }}">Create new</a>
+			<div class="flex items-center">
+				<i class="fa-solid fa-folder"></i>
+				{# if con Aucune dossier crée#}
+				<p>Folder</p>
+				<p>N°</p>
+			</div>
+		</aside>
+		<section class="bg-white">
+			<div class="flex bg-white justify-around py-5 ">
+				<div class="flex flex-col gap-2 ">
+					<h1 class="text-2xl">Gestion de Tâches</h1>
+					<p class="text-gray-500">Organisez votre journée efficacement</p>
+				</div>
+				<nav class="flex gap-4 items-center">
+					<a href="" class="flex gap-4 items-center">
+						<i class="fa-solid fa-gear"></i>
+						Gérer les priorités
+					</a>
+					<a href="" class="btn-nav">
+						<i class="fa-solid fa-folder-plus"></i>
+						Nouveau dossier</a>
+					<a href="{{ path('app_task_new') }}" class="btn-nav bg-black text-white">
+						<i class="fa-solid fa-plus"></i>
+						Nouvelle tâche</a>
+					<a href="" class="btn-nav">
+						<i class="fa-solid fa-arrow-right-from-bracket fa-bounce"></i>
+						Desconexion</a>
+				</nav>
+			</div>
+			{#FILTRES#}
+			<div class="bg-[#f9fafb] flex border-3 border-gray-200 p-5 gap-x-4 items-center">
+				<div>
+					<i class="fa-solid fa-filter"></i>
+					Filtres:
+				</div>
+				<label for="status">Statut
+				</label>
+				<select name="status" id="status" class="select">
+					<option value="">Tous</option>
+					<option value="">Pending</option>
+					<option value="">Completed</option>
+					<option value="">Archived</option>
+				</select>
+				<label for="priorite">Priorité</label>
+				<select name="priorite" id="priorite" class="select">
+					<option value="">Toutes</option>
+					<option value="">Normal</option>
+					<option value="">Important</option>
+					<option value="">Urgent</option>
+				</select>
+			</div>
+			{#TACHE#}
+			{#if no hay tache, mostrar aucune tache pour le moment, Créez votre première tache!#}
+		</section>
+	</div>
 {% endblock %}
