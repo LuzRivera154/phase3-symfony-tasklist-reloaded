@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Folder;
 use App\Entity\Task;
 use App\Entity\User;
+use App\Form\FolderType;
 use App\Form\TaskType;
+use App\Repository\FolderRepository;
+use App\Repository\PriorityRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,10 +20,25 @@ use Symfony\Component\Routing\Attribute\Route;
 final class TaskController extends AbstractController
 {
     #[Route(name: 'app_task_index', methods: ['GET'])]
-    public function index(TaskRepository $taskRepository): Response
+    public function index(TaskRepository $taskRepository, FolderRepository $folderRepository): Response
     {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+        $tasks = $taskRepository->findBy([
+            'user' => $user
+        ]);
+        $folders = $folderRepository->findBy([
+            'user' => $user,
+        ]);
+        
+
         return $this->render('task/index.html.twig', [
-            'tasks' => $taskRepository->findAll(),
+            'tasks' => $tasks,
+            'folders' => $folders,
+
         ]);
     }
 
@@ -27,7 +46,9 @@ final class TaskController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
+        $form = $this->createForm(TaskType::class, $task, [
+            'user' => $this->getUser(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -56,23 +77,7 @@ final class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Task $task, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(TaskType::class, $task);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('task/edit.html.twig', [
-            'task' => $task,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
     public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
@@ -84,9 +89,4 @@ final class TaskController extends AbstractController
 
         return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
     }
-
-    //[Route('/folder/new', app:'app_folder_new', methods:['GET', 'POST' ])]
-    //public function newFolder(Request $request, Folder $folder, EntityManagerInterface $entityManager): Response{
-
-    // }
 }

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Priority
+{% endblock %}
+
+{% block body %}
+	<div class="grid place-items-center min-h-screen bg-[#e9e9e9fa]">
+		<div class="bg-white rounded-xl p-7 formShadow md:w-1/3">
+			<div class="flex justify-between">
+				<div class="flex flex-col">
+					<h1 class="text-2xl pb-3">Gérer les priorités</h1>
+					<p class="text-xl pb-5 text-gray-500">Ajoutez ou supprimez des niveaux de priorité personnalisés</p>
+				</div>
+				<a href="{{ path('app_task_index')}}" class="text-2xl text-gray-500 hover:text-black transitionEffect">x</a>
+			</div>
+			{{ include('priority/_form.html.twig') }}
+			<div class="flex flex-col gap-2">
+				<p>Priorités existantes</p>
+				{% for priority in priorities %}
+					<div class="flex border justify-between border-gray-300 p-2 rounded-xl hover:border-gray-500 transitionEffect">
+						<p >{{priority.name}}</p>
+						{% if priority.id > 3 %}
+							{{ include('priority/_delete_form.html.twig', {'priority': priority}) }}
+						{% endif %}
+					</div>
+				{% endfor %}
+
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+<form method="post" action="{{ path('app_priority_delete') }}">
+	<input type="hidden" name="id" value="{{priority.id}}">
+	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ priority.id) }}">
+	<button class="btn text-red-500 cursor-pointer font-bold pr-5">X</button>
+</form>

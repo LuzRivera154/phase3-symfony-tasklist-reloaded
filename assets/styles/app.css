@@ -32,3 +32,41 @@ body {
 .transitionEffect{
     transition:all .2s ease-in-out;
 }
+.formShadow{
+    border:1px solid rgba(172, 170, 170, 0.178);
+    box-shadow: 
+        0px 4px 6px -4px rgba(0, 0, 0, 0.1),
+        0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.btn-primary{
+    background: #000000;
+    border-radius: .75rem;
+    border: 1px solid #A9B0BD;
+    color: #ffffff;
+    font-size: 1.25rem;
+    padding:0.75rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-primary:hover{
+    border-color:#e5e7eb;
+    background-color: #111827;
+}
+.btn-secondary {
+    border: 1px solid #d1d5db;   
+    border-radius: 0.75rem;      
+    font-size: 1.25rem;         
+    padding: 0.75rem;           
+    margin-top: 0.5rem;          
+    cursor: pointer;            
+    background-color: #ffffff;   
+    color: #374151;              
+    transition: all 0.2s ease-in-out; 
+}
+
+/* Hovers */
+.btn-secondary:hover {
+    border-color: #6b7280;       
+    background-color: #f9fafb;   
+}

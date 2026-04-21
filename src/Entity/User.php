@@ -42,9 +42,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $username = null;
 
+    /**
+     * @var Collection<int, Folder>
+     */
+    #[ORM\OneToMany(targetEntity: Folder::class, mappedBy: 'user')]
+    private Collection $folders;
+
+    /**
+     * @var Collection<int, Priority>
+     */
+    #[ORM\OneToMany(targetEntity: Priority::class, mappedBy: 'user')]
+    private Collection $priorities;
+
     public function __construct()
     {
         $this->Task = new ArrayCollection();
+        $this->folders = new ArrayCollection();
+        $this->priorities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,6 +177,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Folder>
+     */
+    public function getFolders(): Collection
+    {
+        return $this->folders;
+    }
+
+    public function addFolder(Folder $folder): static
+    {
+        if (!$this->folders->contains($folder)) {
+            $this->folders->add($folder);
+            $folder->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFolder(Folder $folder): static
+    {
+        if ($this->folders->removeElement($folder)) {
+            // set the owning side to null (unless already changed)
+            if ($folder->getUser() === $this) {
+                $folder->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Priority>
+     */
+    public function getPriorities(): Collection
+    {
+        return $this->priorities;
+    }
+
+    public function addPriority(Priority $priority): static
+    {
+        if (!$this->priorities->contains($priority)) {
+            $this->priorities->add($priority);
+            $priority->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePriority(Priority $priority): static
+    {
+        if ($this->priorities->removeElement($priority)) {
+            // set the owning side to null (unless already changed)
+            if ($priority->getUser() === $this) {
+                $priority->setUser(null);
+            }
+        }
 
         return $this;
     }

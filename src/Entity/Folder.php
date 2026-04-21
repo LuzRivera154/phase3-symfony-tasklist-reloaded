@@ -33,6 +33,9 @@ class Folder
     #[ORM\ManyToOne(inversedBy: 'folders')]
     private ?User $user = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $color = null;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
@@ -105,4 +108,18 @@ class Folder
 
         return $this;
     }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): static
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+ 
 }

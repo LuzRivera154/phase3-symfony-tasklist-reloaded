@@ -1,0 +1,33 @@
+{{ form_start(form) }}
+<div class="flex flex-col gap-5">
+	<label for="{{form.name.vars.id}}" class="label">Nom du dossier</label>
+	{{ form_widget(form.name,{'attr':{class:"input" , placeholder:"Ex:Travail"}}) }}
+	<div>
+		<label for="{{form.color.vars.id}}" class="label">Couleur</label>
+		<div
+			class="grid grid-cols-8 gap-y-7 gap-x-5 my-5">
+			{#Cuando usás 'expanded' => true en un ChoiceType, 
+															Symfony no trata el campo como una sola unidad, sino como una colección de opciones.
+															form.color: Es el campo completo (el "padre").
+														   child: Es cada una de las opciones individuales (cada color) que definiste en el array choices de tu PHP.#}
+			{% for child in form.color %}
+				<label for="{{ child.vars.id }}"class="cursor-pointer">
+					{{form_widget(child,{'attr':{'class':'peer hidden'}})}}
+					<span class="w-8 h-8 rounded-full block transition-all duration-300 ease-in-out
+						                     border-2 border-transparent
+						                     hover:scale-110
+						                     peer-checked:scale-110
+						                     peer-checked:border-white
+						                     peer-checked:ring-2
+						                     peer-checked:ring-gray-600
+						                     peer-checked:shadow-lg" style="background-color: {{ child.vars.value }};"></span>
+				</label>
+			{% endfor %}
+		</div>
+		<div class="flex justify-end gap-4">
+			<a href="{{ path('app_task_index') }}" class="btn btn-secondary">Annuler</a>
+			<button class="btn btn-primary">{{ button_label|default('Créer') }}</button>
+		</div>
+	</div>
+</div>
+{{ form_end(form) }}
