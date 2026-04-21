@@ -5,46 +5,55 @@
 
 {% block body %}
 	<div class="grid grid-cols-[minmax(200px,300px)_1fr] min-h-screen">
-		<aside class="bg-[#f9fafb] p-5 flex- gap-y-7 border-r-3 border-gray-200 md:flex-col ">
+		<aside class="bg-[#f9fafb] p-5 flex gap-y-5 border-r-3 border-gray-200 md:flex-col ">
 			<div class="bg-black text-white flex p-3 gap-3 items-center justify-center rounded-xl">
 				<i class="fa-solid fa-house"></i>
 				<p>Toutes les tâches</p>
 			</div>
-			<p class="text-gray-500 my-4">Dossiers</p>
+			<p class="text-gray-500 my-7 text-xl tracking-wide">Dossiers</p>
 
-			{#DOSSIER#}
 
-			<div class="flex items-center">
-				<i class="fa-solid fa-folder"></i>
-				{# if con Aucune dossier crée#}
-				<p>Folder</p>
-				<p>N°</p>
+			<div class="flex flex-col gap-y-4 ">
+				{% if folders|length > 0 %}
+					{% for folder in folders %}
+						<div class="flex justify-between cursor-pointer p-1  hover:bg-gray-200 transitionEffect">
+							<div class="flex items-center gap-4">
+								<span class="w-4 h-4 rounded-full" style="background-color: {{ folder.color }}"></span>
+								<i class="fa-solid fa-folder"></i>
+								<p>{{folder.name}}</p>
+							</div>
+							<p class="pr-5">{{folder.tasks|length}}</p>
+						</div>
+					{% endfor %}
+				{% else %}
+					<p class="text-gray-400 text-xl">Aucune dossier crée</p>
+				{% endif %}
 			</div>
 		</aside>
 		<section class="bg-white">
 			<div class="flex bg-white justify-around py-5 ">
-				<div class="flex flex-col gap-2 ">
+				<div class="flex flex-col gap-2 px-2">
 					<h1 class="text-2xl">Gestion de Tâches</h1>
 					<p class="text-gray-500">Organisez votre journée efficacement</p>
 				</div>
 				<nav class="flex gap-4 items-center">
-					<a href="" class="flex gap-4 items-center">
+					<a href='#' class="flex gap-4 items-center">
 						<i class="fa-solid fa-gear"></i>
 						Gérer les priorités
 					</a>
-					<a href="" class="btn-nav">
+					<a href="{{ path('app_folder_new')}}" class="btn-nav">
 						<i class="fa-solid fa-folder-plus"></i>
 						Nouveau dossier</a>
 					<a href="{{ path('app_task_new') }}" class="btn-nav bg-black text-white">
 						<i class="fa-solid fa-plus"></i>
 						Nouvelle tâche</a>
-					<a href="" class="btn-nav">
+					<a href="{{path('app_logout')}}" class="btn-nav">
 						<i class="fa-solid fa-arrow-right-from-bracket fa-bounce"></i>
 						Desconexion</a>
 				</nav>
 			</div>
 			{#FILTRES#}
-			<div class="bg-[#f9fafb] flex border-3 border-gray-200 p-5 gap-x-4 items-center">
+			<div class="bg-[#f9fafb] flex border-y-3 border-gray-200 p-5 gap-x-4 items-center">
 				<div>
 					<i class="fa-solid fa-filter"></i>
 					Filtres:
@@ -66,7 +75,40 @@
 				</select>
 			</div>
 			{#TACHE#}
-			{#if no hay tache, mostrar aucune tache pour le moment, Créez votre première tache!#}
+			{% if tasks|length > 0 %}
+				{% for task in tasks %}
+					<div class="flex justify-between items-center border border-gray-200 rounded-xl m-5">
+						<div class="flex p-5 gap-7">
+							<input type="checkbox" name="" id="" class="h-5 w-5 rounded border-gray-300 self-center">
+							<div>
+								<p class="text-xl">{{task.title}}</p>
+								{% if task.status.value == "pending" %}
+									<p class="text-gray-500">En cours</p>
+								{% elseif task.status.value == "completed" %}
+									<p class="text-gray-500">Terminé</p>
+								{% elseif task.status.value == "archived" %}
+									<p class="text-gray-500">Archivée</p>
+								{% else %}
+									<p class="text-gray-500">task.status.value</p>
+								{% endif %}
+							</div>
+							{% if task.Priority.name == "normal" %}
+								<p class="bg-blue-100 border border-blue-200  text-blue-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+							{% elseif task.Priority.name == "important" %}
+								<p class="bg-orange-100 border border-orange-200  text-orange-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+							{% elseif task.Priority.name == "urgent" %}
+								<p class="bg-red-100 border border-red-200  text-red-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+							{% else %}
+								<p class="bg-gray-100 border border-gray-200  text-gray-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+							{% endif %}
+
+						</div>
+						<i class="fa-solid fa-thumbtack pr-20  "></i>
+					</div>
+				{% endfor %}
+			{% else %}
+				<p class="text-center text-gray-500 pt-20">Aucune tache pour le moment, Créez votre première tache!</p>
+			{% endif %}
 		</section>
 	</div>
 {% endblock %}

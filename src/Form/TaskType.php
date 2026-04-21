@@ -19,7 +19,7 @@ class TaskType extends AbstractType
             ->add('title')
             ->add('Folder', EntityType::class, [
                 'class' => Folder::class,
-                'choice_label' => 'Aucune dossier',
+                'choice_label' => 'name',
                 'placeholder'=> 'Aucune dossier',
                 'required'=> false,
             ])
