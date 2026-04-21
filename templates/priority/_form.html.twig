@@ -1,4 +1,8 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form,{'attr':{class:'w-full'}}) }}
+<div class="flex items-center gap-1 mb-3 md:gap-3">
+	{{ form_widget(form.name,{'attr': {class:"bg-gray-100 py-4 px-3  rounded-md flex-1", placeholder:"Ex: Très urgent"}}) }}
+	<button class="btn bg-black text-2xl text-white
+		    px-4 py-3 rounded-md cursor-pointer
+		    ">{{ button_label|default('+') }}</button>
+</div>
 {{ form_end(form) }}

@@ -4,14 +4,13 @@
 {% endblock %}
 
 {% block body %}
-	<div class="grid grid-cols-[minmax(200px,300px)_1fr] min-h-screen">
-		<aside class="bg-[#f9fafb] p-5 flex gap-y-5 border-r-3 border-gray-200 md:flex-col ">
+	<div class="grid md:grid-cols-[minmax(200px,300px)_1fr] min-h-screen">
+		<aside class="bg-[#f9fafb] p-5 flex gap-y-5 border-r-3 border-gray-200 flex-col ">
 			<div class="bg-black text-white flex p-3 gap-3 items-center justify-center rounded-xl">
 				<i class="fa-solid fa-house"></i>
 				<p>Toutes les tâches</p>
 			</div>
 			<p class="text-gray-500 my-7 text-xl tracking-wide">Dossiers</p>
-
 
 			<div class="flex flex-col gap-y-4 ">
 				{% if folders|length > 0 %}
@@ -31,13 +30,13 @@
 			</div>
 		</aside>
 		<section class="bg-white">
-			<div class="flex bg-white justify-around py-5 ">
-				<div class="flex flex-col gap-2 px-2">
+			<div class="flex bg-white justify-between py-5 ">
+				<div class="flex flex-col px-3 gap-2">
 					<h1 class="text-2xl">Gestion de Tâches</h1>
 					<p class="text-gray-500">Organisez votre journée efficacement</p>
 				</div>
-				<nav class="flex gap-4 items-center">
-					<a href='#' class="flex gap-4 items-center">
+				<nav class="flex gap-4 px-7 items-center">
+					<a href="{{path('app_priority_new')}}" class="flex gap-4 items-center">
 						<i class="fa-solid fa-gear"></i>
 						Gérer les priorités
 					</a>
@@ -92,18 +91,26 @@
 									<p class="text-gray-500">task.status.value</p>
 								{% endif %}
 							</div>
-							{% if task.Priority.name == "normal" %}
-								<p class="bg-blue-100 border border-blue-200  text-blue-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
-							{% elseif task.Priority.name == "important" %}
-								<p class="bg-orange-100 border border-orange-200  text-orange-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
-							{% elseif task.Priority.name == "urgent" %}
-								<p class="bg-red-100 border border-red-200  text-red-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+							{% if task.priority is not null %}
+								{% if task.priority.name == "normal" %}
+									<p class="bg-blue-100 border border-blue-200  text-blue-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+								{% elseif task.priority.name == "important" %}
+									<p class="bg-orange-100 border border-orange-200  text-orange-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+								{% elseif task.priority.name == "urgent" %}
+									<p class="bg-red-100 border border-red-200  text-red-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+								{% else %}
+									<p class="bg-gray-100 border border-gray-200  text-gray-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+								{% endif %}
+
 							{% else %}
-								<p class="bg-gray-100 border border-gray-200  text-gray-700 px-3 py-0.5 h-8 rounded-md">{{task.Priority.name}}</p>
+								<p class="bg-gray-50 border border-gray-200 text-gray-400 px-3 py-0.5 h-8 rounded-md italic">Sans priorité</p>
+
 							{% endif %}
 
+
 						</div>
-						<i class="fa-solid fa-thumbtack pr-20  "></i>
+						<i class="fa-solid fa-thumbtack pr-20"></i>
+						
 					</div>
 				{% endfor %}
 			{% else %}

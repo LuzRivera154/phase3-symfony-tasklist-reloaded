@@ -14,68 +14,48 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/priority')]
 final class PriorityController extends AbstractController
 {
-    #[Route(name: 'app_priority_index', methods: ['GET'])]
-    public function index(PriorityRepository $priorityRepository): Response
-    {
-        return $this->render('priority/index.html.twig', [
-            'priorities' => $priorityRepository->findAll(),
-        ]);
-    }
-
     #[Route('/new', name: 'app_priority_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, PriorityRepository $priorityRepository): Response
     {
         $priority = new Priority();
         $form = $this->createForm(PriorityType::class, $priority);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $priority->setUser($this->getUser());
             $entityManager->persist($priority);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_priority_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_priority_new', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('priority/new.html.twig', [
             'priority' => $priority,
+            'priorities' => $priorityRepository->findAll(),
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_priority_show', methods: ['GET'])]
-    public function show(Priority $priority): Response
+    #[Route('/delete', name: 'app_priority_delete', methods: ['POST'])]
+    public function delete(Request $request, PriorityRepository $priorityRepository, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('priority/show.html.twig', [
-            'priority' => $priority,
-        ]);
-    }
+        $id = $request->request->get('id');
+        $priority = $priorityRepository->find($id);
 
-    #[Route('/{id}/edit', name: 'app_priority_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Priority $priority, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(PriorityType::class, $priority);
-        $form->handleRequest($request);
+        if ($priority &&  $this->isCsrfTokenValid(
+            'delete' . $id,
+            $request->getPayload()->getString('_token')
+        )) {
+            $defaultPriority = $priorityRepository->findOneBy(['name' => 'normal']);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            foreach ($priority->getTask() as $task) {
+                $task->setPriority($defaultPriority);
+            }
 
-            return $this->redirectToRoute('app_priority_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('priority/edit.html.twig', [
-            'priority' => $priority,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_priority_delete', methods: ['POST'])]
-    public function delete(Request $request, Priority $priority, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$priority->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($priority);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_priority_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_priority_new', [], Response::HTTP_SEE_OTHER);
     }
 }

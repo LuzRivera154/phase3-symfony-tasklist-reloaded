@@ -24,9 +24,8 @@ class Priority
     #[ORM\Column(length: 255, unique:true)]
     private ?string $name = null;
 
-    #[ORM\Column(unique:true)]
-    private ?int $importance = null;
-
+    #[ORM\ManyToOne(inversedBy: 'priorities')]
+    private ?User $user = null;
 
 
     public function __construct()
@@ -80,17 +79,16 @@ class Priority
         return $this;
     }
 
-    public function getImportance(): ?int
+    public function getUser(): ?User
     {
-        return $this->importance;
+        return $this->user;
     }
 
-    public function setImportance(int $importance): static
+    public function setUser(?User $user): static
     {
-        $this->importance = $importance;
+        $this->user = $user;
 
         return $this;
     }
-
 
 }

@@ -31,13 +31,14 @@ final class TaskController extends AbstractController
             'user' => $user
         ]);
         $folders = $folderRepository->findBy([
-            'user' =>$user,
+            'user' => $user,
         ]);
-      
+        
+
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks,
-            'folders'=> $folders,
-         
+            'folders' => $folders,
+
         ]);
     }
 
@@ -45,7 +46,9 @@ final class TaskController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
+        $form = $this->createForm(TaskType::class, $task, [
+            'user' => $this->getUser(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -74,7 +77,7 @@ final class TaskController extends AbstractController
         ]);
     }
 
-   
+
 
     #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
     public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
