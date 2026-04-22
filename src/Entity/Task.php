@@ -5,8 +5,15 @@ namespace App\Entity;
 use App\Enum\Status;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
+#[ORM\UniqueConstraint(name: 'uniq_title_name_user', columns: ['title', 'user_id'])]
+#[UniqueEntity(
+    fields: ['title', 'user'],
+    message: 'Ya tienes una tarea con este nombre.'
+)]
 class Task
 {
     #[ORM\Id]
@@ -14,7 +21,7 @@ class Task
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, unique:true)]
+    #[ORM\Column(length: 255)]
     private ?string $title = null;
 
     #[ORM\Column(enumType: Status::class)]

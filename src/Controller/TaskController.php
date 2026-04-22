@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Folder;
 use App\Entity\Task;
 use App\Entity\User;
+use App\Enum\Status;
 use App\Form\FolderType;
 use App\Form\TaskType;
 use App\Repository\FolderRepository;
@@ -15,6 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+
+use function PHPUnit\Framework\throwException;
 
 #[Route('/task')]
 final class TaskController extends AbstractController
@@ -33,7 +36,7 @@ final class TaskController extends AbstractController
         $folders = $folderRepository->findBy([
             'user' => $user,
         ]);
-        
+
 
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks,
@@ -68,21 +71,36 @@ final class TaskController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_task_show', methods: ['GET'])]
-    public function show(Task $task): Response
+    #[Route('/{id}/toggle', name: 'app_task_toggle', methods: ['POST'])]
+    public function toggle(Request $request, Task $task, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('task/show.html.twig', [
-            'task' => $task,
-        ]);
+        if (!$this->isCsrfTokenValid(
+            'toggle' . $task->getId(),
+            $request->request->get('_token')
+        )) {
+            throw $this->createAccessDeniedException();
+        }
+        $newStatus = match ($task->getStatus()) {
+            Status::pending => Status::completed,
+            Status::completed => Status::pending,
+            Status::archived => Status::archived,
+            default           => Status::pending,
+        };
+
+        $task->setStatus($newStatus);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_task_index');
     }
-
-
-
-    #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
-    public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
+    #[Route('/delete', name: 'app_task_delete', methods: ['POST'])]
+    public function delete(Request $request, Task $task, TaskRepository $taskRepository, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $task->getId(), $request->getPayload()->getString('_token'))) {
+        $id = $request->request->get('id');
+        $task = $taskRepository->find($id);
+
+        if ($task && $this->isCsrfTokenValid(
+            'delete' . $id,
+            $request->getPayload()->getString('_token')
+        )) {
             $entityManager->remove($task);
             $entityManager->flush();
         }

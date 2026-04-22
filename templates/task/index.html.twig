@@ -76,18 +76,25 @@
 			{#TACHE#}
 			{% if tasks|length > 0 %}
 				{% for task in tasks %}
-					<div class="flex justify-between items-center border border-gray-200 rounded-xl m-5">
+					<div id="task_{{task.id}}" class="flex justify-between items-center border border-gray-200 rounded-xl m-5">
 						<div class="flex p-5 gap-7">
-							<input type="checkbox" name="" id="" class="h-5 w-5 rounded border-gray-300 self-center">
+							<form action="{{path('app_task_toggle',{'id': task.id})}}" method="post" class="mt-3" data-turbo="true">
+								<input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ task.id) }}">
+								<input type="checkbox" class="h-5 w-5 rounded border-gray-300 self-center cursor-pointer" onchange="this.form.requestSubmit()">
+							</form>
+
 							<div>
-								<p class="text-xl">{{task.title}}</p>
 								{% if task.status.value == "pending" %}
+									<p class="text-xl">{{task.title}}</p>
 									<p class="text-gray-500">En cours</p>
 								{% elseif task.status.value == "completed" %}
+									<p class="text-xl text-gray-500 line-through transitionEffect">{{task.title}}</p>
 									<p class="text-gray-500">Terminé</p>
 								{% elseif task.status.value == "archived" %}
+									<p class="text-xl">{{task.title}}</p>
 									<p class="text-gray-500">Archivée</p>
 								{% else %}
+									<p class="text-xl">{{task.title}}</p>
 									<p class="text-gray-500">task.status.value</p>
 								{% endif %}
 							</div>
@@ -107,10 +114,9 @@
 
 							{% endif %}
 
-
 						</div>
 						<i class="fa-solid fa-thumbtack pr-20"></i>
-						
+
 					</div>
 				{% endfor %}
 			{% else %}
