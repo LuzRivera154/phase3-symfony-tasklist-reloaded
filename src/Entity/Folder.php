@@ -6,8 +6,15 @@ use App\Repository\FolderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: FolderRepository::class)]
+//Define la combinacion de columnas que queremos que sea unica
+#[ORM\UniqueConstraint(name: 'uniq_folder_name_user', columns: ['name', 'user_id'])]
+#[UniqueEntity(
+    fields: ['name', 'user'],
+    message: 'Ya tienes una carpeta con este nombre.'
+)]
 class Folder
 {
     #[ORM\Id]
@@ -15,7 +22,7 @@ class Folder
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, unique:true)]
+    #[ORM\Column(length: 255)]
     private ?string $name = null;
 
     /**
@@ -120,6 +127,4 @@ class Folder
 
         return $this;
     }
-
- 
 }
