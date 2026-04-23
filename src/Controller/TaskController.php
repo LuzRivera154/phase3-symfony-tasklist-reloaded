@@ -30,9 +30,10 @@ final class TaskController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-        $tasks = $taskRepository->findBy([
-            'user' => $user
-        ]);
+        $tasks = $taskRepository->findBy(
+            ['user' => $user],
+            ['isPinned' => 'DESC', 'id' => 'DESC']
+        );
         $folders = $folderRepository->findBy([
             'user' => $user,
         ]);
@@ -83,7 +84,7 @@ final class TaskController extends AbstractController
         $newStatus = match ($task->getStatus()) {
             Status::pending => Status::completed,
             Status::completed => Status::pending,
-            Status::archived => Status::archived,
+            Status::archived => Status::completed,
             default           => Status::pending,
         };
 
@@ -91,6 +92,28 @@ final class TaskController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('app_task_index');
     }
+
+    #[Route('/{id}/pin', name: 'app_task_pin', methods: ['POST'])]
+    public function pin(Request $request, Task $task, EntityManagerInterface $entityManager): Response
+    {
+        if (!$this->isCsrfTokenValid(
+            'pin' . $task->getId(),
+            $request->request->get('_token')
+        )) {
+            throw $this->createAccessDeniedException();
+        }
+        $isNowPinned = !$task->isPinned();
+        $task->setIsPinned($isNowPinned);
+        if ($isNowPinned) {
+            $task->setStatus(Status::archived);
+        } else {
+            $task->setStatus(Status::pending);
+        }
+        $entityManager->flush();
+        return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
     #[Route('/delete', name: 'app_task_delete', methods: ['POST'])]
     public function delete(Request $request, Task $task, TaskRepository $taskRepository, EntityManagerInterface $entityManager): Response
     {

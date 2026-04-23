@@ -25,4 +25,7 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
+    '@formkit/auto-animate' => [
+        'version' => '0.9.0',
+    ],
 ];
