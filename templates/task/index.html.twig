@@ -16,8 +16,8 @@
 					{% for folder in folders %}
 						<div class="flex justify-between cursor-pointer p-1  hover:bg-gray-200 transitionEffect">
 							<div class="flex items-center gap-4">
-								<span class="w-4 h-4 rounded-full" style="background-color: {{ folder.color }}"></span>
 								<a href="{{ path('app_task_index', { folderId: folder.id })}}" class="flex items-center gap-4" data-turbo-frame="tasks_list_frame">
+									<span class="w-4 h-4 rounded-full" style="background-color: {{ folder.color }}"></span>
 									<i class="fa-solid fa-folder"></i>
 									{{folder.name}}
 								</a>
@@ -53,7 +53,10 @@
 				</nav>
 			</div>
 			{#FILTRES#}
-			<div class="bg-[#f9fafb] flex border-y-3 border-gray-200 p-5 gap-x-4 items-center">
+			<form action="{{path('app_task_index' ,{ folderId: currentFolderId })}}" method="get" onchange="this.requestSubmit()" data-turbo-frame="tasks_list_frame" class="bg-[#f9fafb] flex border-y-3 border-gray-200 p-5 gap-x-4 items-center">
+				{% if currentFolderId %}
+					<input type="hidden" name="folderId" value="{{ currentFolderId }}">
+				{% endif %}
 				<div>
 					<i class="fa-solid fa-filter"></i>
 					Filtres:
@@ -62,21 +65,23 @@
 				</label>
 				<select name="status" id="status" class="select">
 					<option value="">Tous</option>
-					<option value="">Pending</option>
-					<option value="">Completed</option>
-					<option value="">Archived</option>
+					<option value="pending" {{ selectedStatus == 'pending' ? 'selected' : '' }}>Pending</option>
+					<option value="completed" {{ selectedStatus == 'completed' ? 'selected' : '' }}>Completed</option>
+					<option value="archived" {{ selectedStatus == 'archived' ? 'selected' : '' }}>Archived</option>
 				</select>
-				<label for="priorite">Priorité</label>
-				<select name="priorite" id="priorite" class="select">
-					<option value="">normal</option>
-					<option value="">important</option>
-					<option value="">urgent</option>
+				<label for="priority">Priorité</label>
+				<select name="priority" id="priorite" class="select">
+
 					{% for priority in priorities %}
-						<option value="">{{priority.name}}</option>
+						<option value="{{ priority.name }}" {{ selectedPriority == priority.name ? 'selected' : '' }}>
+							{{ priority.name|capitalize }}
+						</option>
+
 					{% endfor %}
 
 				</select>
-			</div>
+
+			</form>
 			{#TACHE#}
 
 			<turbo-frame id="tasks_list_frame">
