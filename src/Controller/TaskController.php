@@ -22,27 +22,40 @@ use function PHPUnit\Framework\throwException;
 #[Route('/task')]
 final class TaskController extends AbstractController
 {
-    #[Route(name: 'app_task_index', methods: ['GET'])]
-    public function index(TaskRepository $taskRepository, FolderRepository $folderRepository): Response
+    //defaults: ['folderId' => null]
+    //Si el usuario entra a /task (sin nada después), asume que folderId es nulo y ejecuta la función igua
+    //requirements: ['folderId' => '\d+']: Esto es fundamental. 
+    //Le dice a Symfony que esa ruta solo se active si el parámetro son números (\d+).
+    #[Route('/{folderId}', name: 'app_task_index', methods: ['GET'], defaults: ['folderId' => null], requirements: ['folderId' => '\d+'])]
+    public function index(?int $folderId, TaskRepository $taskRepository, FolderRepository $folderRepository, PriorityRepository $priorityRepository): Response
     {
         $user = $this->getUser();
 
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
+
+        $criteria = ['user' => $user];
+        if ($folderId) {
+            $criteria['Folder'] = $folderId;
+        };
+
         $tasks = $taskRepository->findBy(
-            ['user' => $user],
+            $criteria,
             ['isPinned' => 'DESC', 'id' => 'DESC']
         );
         $folders = $folderRepository->findBy([
             'user' => $user,
         ]);
-
+        $priorities = $priorityRepository->findBy([
+            'user' => $user,
+        ]);
 
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks,
             'folders' => $folders,
-
+            'priorities' => $priorities,
+            'currentFolderId' => $folderId,
         ]);
     }
 
@@ -104,11 +117,7 @@ final class TaskController extends AbstractController
         }
         $isNowPinned = !$task->isPinned();
         $task->setIsPinned($isNowPinned);
-        if ($isNowPinned) {
-            $task->setStatus(Status::archived);
-        } else {
-            $task->setStatus(Status::pending);
-        }
+
         $entityManager->flush();
         return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
     }

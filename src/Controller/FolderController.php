@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/folder')]
 final class FolderController extends AbstractController
 {
-    #[Route(name: 'app_folder_index', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_folder_index', methods: ['GET'])]
     public function index(FolderRepository $folderRepository): Response
     {
         return $this->render('folder/index.html.twig', [
