@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Task;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,14 +16,56 @@ class TaskRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Task::class);
     }
-    
-    public function findTaskByPinned(): array {
+
+    public function findTaskByPinned(): array
+    {
         return $this->createQueryBuilder("t")
-        ->orderBy('t.isPinned','DESC')
-        ->addOrderBy('t.id','DESC')
-        ->getQuery()    
-        ->getResult();
+            ->orderBy('t.isPinned', 'DESC')
+            ->addOrderBy('t.id', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
+    public function findTasksByFilters(
+        User $user,
+        ?int $folderId = null,
+        ?string $priorityName = null,
+        ?string $statusName = null
+    ): array {
+        $qb = $this->createQueryBuilder('t')
+            ->where('t.user = :user')
+            ->setParameter('user', $user);
+
+        // Filtro por Carpeta
+        if ($folderId) {
+            $qb->andWhere('t.Folder = :folderId')
+                ->setParameter('folderId', $folderId);
+        }
+
+        // Filtro por Status 
+        if ($statusName && $statusName !== '') {
+            $qb->andWhere('t.status = :status')
+                ->setParameter('status', $statusName);
+        }
+
+        // Filtro por Prioridad
+        if ($priorityName && $priorityName !== '') {
+            $qb->leftJoin('t.priority', 'p')
+                ->andWhere('p.name = :pName')
+                ->andWhere($qb->expr()->orX(
+                    'p.user IS NULL',
+                    'p.user = :user'
+                ))
+                ->setParameter('pName', $priorityName);
+        }
+
+        // Orden
+        return $qb->orderBy('t.isPinned', 'DESC')
+            ->addOrderBy('t.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
     //    /**
     //     * @return Task[] Returns an array of Task objects
     //     */

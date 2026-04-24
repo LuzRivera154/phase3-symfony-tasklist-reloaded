@@ -27,7 +27,7 @@ final class TaskController extends AbstractController
     //requirements: ['folderId' => '\d+']: Esto es fundamental. 
     //Le dice a Symfony que esa ruta solo se active si el parámetro son números (\d+).
     #[Route('/{folderId}', name: 'app_task_index', methods: ['GET'], defaults: ['folderId' => null], requirements: ['folderId' => '\d+'])]
-    public function index(?int $folderId, TaskRepository $taskRepository, FolderRepository $folderRepository, PriorityRepository $priorityRepository): Response
+    public function index(?int $folderId, Request $request, TaskRepository $taskRepository, FolderRepository $folderRepository, PriorityRepository $priorityRepository): Response
     {
         $user = $this->getUser();
 
@@ -35,27 +35,38 @@ final class TaskController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $criteria = ['user' => $user];
-        if ($folderId) {
-            $criteria['Folder'] = $folderId;
-        };
+    
+        if (!$folderId) {
+            $folderId = $request->query->get('folderId');
+        }
+        $priorityName = $request->query->get('priority');
+        $statusName = $request->query->get('status');
 
-        $tasks = $taskRepository->findBy(
-            $criteria,
-            ['isPinned' => 'DESC', 'id' => 'DESC']
+        $tasks = $taskRepository->findTasksByFilters(
+            $user,
+            $folderId,
+            $priorityName,
+            $statusName,
         );
+
         $folders = $folderRepository->findBy([
             'user' => $user,
         ]);
-        $priorities = $priorityRepository->findBy([
-            'user' => $user,
-        ]);
+        $priorities = $priorityRepository->createQueryBuilder('p')
+            ->where('p.user = :user')
+            ->orWhere('p.user IS NULL')
+            ->setParameter('user', $user)
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks,
             'folders' => $folders,
             'priorities' => $priorities,
             'currentFolderId' => $folderId,
+            'selectedPriority' => $priorityName,
+            'selectedStatus' => $statusName,
         ]);
     }
 
