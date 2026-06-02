@@ -1,0 +1,102 @@
+[1mdiff --git a/.env b/.env[m
+[1mindex 6f27ad1..e52496d 100644[m
+[1m--- a/.env[m
+[1m+++ b/.env[m
+[36m@@ -20,22 +20,20 @@[m [mAPP_SECRET=[m
+ APP_SHARE_DIR=var/share[m
+ ###< symfony/framework-bundle ###[m
+ [m
+[31m-###> symfony/routing ###[m
+[31m-# Configure how to generate URLs in non-HTTP contexts, such as CLI commands.[m
+[31m-# See https://symfony.com/doc/current/routing.html#generating-urls-in-commands[m
+[31m-DEFAULT_URI=http://localhost[m
+[31m-###< symfony/routing ###[m
+[31m-[m
+ ###> doctrine/doctrine-bundle ###[m
+ # Format described at https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#connecting-using-a-url[m
+ # IMPORTANT: You MUST configure your server version, either here or in config/packages/doctrine.yaml[m
+ #[m
+[31m-DATABASE_URL="sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db"[m
+[32m+[m[32m# DATABASE_URL="sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db"[m
+ # DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=8.0.32&charset=utf8mb4"[m
+ # DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=10.11.2-MariaDB&charset=utf8mb4"[m
+[31m-# DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"[m
+[32m+[m[32mDATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"[m
+ ###< doctrine/doctrine-bundle ###[m
+ [m
+[32m+[m[32m###> symfony/mailer ###[m
+[32m+[m[32mMAILER_DSN=null://null[m
+[32m+[m[32m###< symfony/mailer ###[m
+[32m+[m
+ ###> symfony/messenger ###[m
+ # Choose one of the transports below[m
+ # MESSENGER_TRANSPORT_DSN=amqp://guest:guest@localhost:5672/%2f/messages[m
+[36m@@ -43,6 +41,8 @@[m [mDATABASE_URL="sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db"[m
+ MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0[m
+ ###< symfony/messenger ###[m
+ [m
+[31m-###> symfony/mailer ###[m
+[31m-MAILER_DSN=null://null[m
+[31m-###< symfony/mailer ###[m
+[32m+[m[32m###> symfony/routing ###[m
+[32m+[m[32m# Configure how to generate URLs in non-HTTP contexts, such as CLI commands.[m
+[32m+[m[32m# See https://symfony.com/doc/current/routing.html#generating-urls-in-commands[m
+[32m+[m[32mDEFAULT_URI=http://localhost[m
+[32m+[m[32m###< symfony/routing ###[m
+[1mdiff --git a/.env.dev b/.env.dev[m
+[1mindex 0ed4cb6..1477e45 100644[m
+[1m--- a/.env.dev[m
+[1m+++ b/.env.dev[m
+[36m@@ -1,4 +1,4 @@[m
+ [m
+ ###> symfony/framework-bundle ###[m
+[31m-APP_SECRET=ec5a348755ec735b6594ec24a58773c5[m
+[32m+[m[32mAPP_SECRET=a69912c1e531d4e566d1b10436b3ac47[m
+ ###< symfony/framework-bundle ###[m
+[1mdiff --git a/HOWTOUSE.md b/HOWTOUSE.md[m
+[1mdeleted file mode 100644[m
+[1mindex ab9d515..0000000[m
+[1m--- a/HOWTOUSE.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,65 +0,0 @@[m
+[31m-## 🚀 Tasklist App - Symfony[m
+[31m-[m
+[31m-**Une application de gestion de tâches performante**[m
+[31m-développée avec Symfony, Stimulus et Tailwind CSS.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-### 🛠️ Installation et Configuration[m
+[31m-[m
+[31m-Pour commencer, clonez le dépôt dans votre dossier de projets :[m
+[31m-[m
+[31m-```bash[m
+[31m-git clone https://github.com/LuzRivera154/phase3-symfony-tasklist-reloaded.git[m
+[31m-cd phase3-symfony-tasklist-reloaded[m
+[31m-```[m
+[31m-#### 1. Vérifier les prérequis[m
+[31m-[m
+[31m-Assurez-vous que votre environnement est prêt pour Symfony :[m
+[31m-Bash[m
+[31m-```bash[m
+[31m-symfony check:requirements[m
+[31m-```[m
+[31m-#### 2. Installer les dépendances[m
+[31m-[m
+[31m-Installez les bibliothèques PHP nécessaires avec Composer :[m
+[31m-```bash[m
+[31m-[m
+[31m-composer install[m
+[31m-```[m
+[31m-------[m
+[31m-## ⚡ Lancer l'Application[m
+[31m-[m
+[31m-Pour faire tourner l'app, vous devez exécuter deux commandes dans des terminaux séparés :[m
+[31m-[m
+[31m-Serveur Local[m
+[31m-[m
+[31m-#### Lancez le serveur:[m
+[31m-[m
+[31m-```bash[m
+[31m-symfony server:start[m
+[31m-`

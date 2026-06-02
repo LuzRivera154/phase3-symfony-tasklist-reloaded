@@ -14,13 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/folder')]
 final class FolderController extends AbstractController
 {
-    #[Route('/{id}', name: 'app_folder_index', methods: ['GET'])]
-    public function index(FolderRepository $folderRepository): Response
-    {
-        return $this->render('folder/index.html.twig', [
-            'folders' => $folderRepository->findAll(),
-        ]);
-    }
+
 
     #[Route('/new', name: 'app_folder_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -47,12 +41,10 @@ final class FolderController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_folder_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_folder_index', methods: ['GET'])]
     public function show(Folder $folder): Response
     {
-        return $this->render('folder/show.html.twig', [
-            'folder' => $folder,
-        ]);
+        return $this->redirectToRoute('app_task_index', ['folderId' => $folder->getId()], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}/edit', name: 'app_folder_edit', methods: ['GET', 'POST'])]

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PriorityRepository::class)]
+#[ORM\UniqueConstraint(name: 'unique_priority_name_per_user', columns: ['name', 'user_id'])]
 class Priority
 {
     #[ORM\Id]
@@ -21,7 +22,7 @@ class Priority
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'priority')]
     private Collection $Task;
 
-    #[ORM\Column(length: 255, unique:true)]
+    #[ORM\Column(length: 255)]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'priorities')]

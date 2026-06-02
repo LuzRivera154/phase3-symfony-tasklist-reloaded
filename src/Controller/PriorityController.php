@@ -29,9 +29,17 @@ final class PriorityController extends AbstractController
             return $this->redirectToRoute('app_priority_new', [], Response::HTTP_SEE_OTHER);
         }
 
+        $priorities = $priorityRepository->createQueryBuilder('p')
+            ->where('p.user = :user')
+            ->orWhere('p.user IS NULL')
+            ->setParameter('user', $this->getUser())
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+
         return $this->render('priority/new.html.twig', [
             'priority' => $priority,
-            'priorities' => $priorityRepository->findAll(),
+            'priorities' => $priorities,
             'form' => $form,
         ]);
     }

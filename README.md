@@ -1,106 +1,74 @@
-# phase3-symfony-tasklist-reloaded
-Une application de gestion de tâches priorisées et organisées en dossiers. Développée avec Symfony.
+# Tasklist Reloaded
 
+A task management web app built with Symfony, FrankenPHP, and Docker.
 
-# Projet TaskList Reloaded
-Le bon vieux Tasklist, c'est le projet CRUD classique idéal pour faire un tour d'horizon de Symfony. :)
+## ✨ Features
 
-*Have fun and don't forget to `symfony console cache:clear`*
+- **Authentication:** Register and log in with a secure session.
+- **Tasks:** Create, complete, pin, archive, and delete tasks.
+- **Folders:** Organize tasks into custom color-coded folders.
+- **Priorities:** Define personal priority levels (urgent, important, normal…) and filter tasks by them.
+- **Filters:** Filter tasks by folder, priority, and status (pending / completed / archived).
+- **Live UI:** Instant updates powered by Turbo Drive and Stimulus — no full page reloads.
 
-> Ici se trouve le cahier des charges fonctionnel et une partie du cahier des charges non fonctionnel (le schéma de la base de données).
+## 🛠️ Tech Stack
 
-## Objectif pédagogique : le CRUD, les relations SQL simples et l'authentification.
+- **Backend:** PHP 8.4, Symfony 8.0.
+- **Frontend:** Tailwind CSS, Font Awesome, Stimulus, Turbo (Symfony UX).
+- **Database:** SQLite.
+- **Server:** FrankenPHP (Caddy-based, all-in-one PHP runtime).
+- **Containerization:** Docker + Docker Compose.
 
+## ⚙️ Prerequisites
 
-## Critères d'évaluation :
-|Critères|Description|
-|-|-|
-|MVP|Epic 1 : Gestion des tâches |
-|Respect de la maquette |
-|   Implémentation du diagramme UML pour la BDD|
-| Authorization | Routes privées et publiques|
-| Readme.md Documenter le déploiement | Rédigez un Readme qui explique comment lancer l'application à partir d'un serveur ou d'un PC neuf |
-|V2 (bonus) | Epic 2 : Organisation & Tri |
+- Docker and Docker Compose.
 
-## Cahier des charges fonctionnel
+## 📦 Installation
 
-### Synopsis
-Une application de gestion de tâches priorisées et organisées en dossiers. Développée avec Symfony.
+### 1. Clone the repository
 
-### Maquette
+```bash
+git clone https://github.com/LuzRivera154/phase3-symfony-tasklist-reloaded.git
+cd phase3-symfony-tasklist-reloaded
+```
 
-Maquette interactive :
-https://www.figma.com/proto/O1CFvazkgkjUsdGpVpozRj/Untitled?node-id=4-823&t=S5RtpiUl6nNUacow-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=4%3A823&show-proto-sidebar=1
+### 2. Build and start
 
+```bash
+docker compose up --build -d
+```
 
-### Epic 1 : Gestion des tâches
+This starts two containers:
 
-- User Story 1 : En tant qu'utilisateur, je veux créer une tâche avec un titre et une priorité afin d'organiser ma journée.
-    - CA 1 : L'utilisateur peut créer ses propres priorités.
-    - CA 2 : Les priorités disponibles par défaut sont : "urgent", "important", "normal".
+- **php** — Symfony app served by FrankenPHP on port 8080
+- **mailer** — Mailpit (local mail catcher) on port 8025
 
-- User Story 2 : En tant qu'utilisateur, je veux marquer le statut d'une tâche comme terminée afin de suivre mon avancement.
-    - CA 1 : Une tâche peut avoir les statuts suivants : "en cours", "terminée", "archivée".
-    - CA 2 : Les tâches archivées se retrouvent à la fin de la liste des tâches.
-    - CA 3 : Les tâches terminées se retrouvent juste avant les tâches archivées et leur titre est barré.
-    - CA 4 : Les tâches en cours apparaissent juste avant les tâches terminées dans la liste des tâches.
+### 3. Run database migrations
 
-- User Story 3 : En tant qu'utilisateur, je veux épingler mes tâches les plus importantes afin qu'elles restent visibles en haut de ma liste.
-    - CA 1 : Je clique sur l'icône épingle d'une tâche pour l'épingler.
+```bash
+docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
+```
 
-- User Story 4 : En tant qu'utilisateur, je veux pouvoir m'inscrire et me connecter afin d'accéder à mes tâches personnelles.
-    - CA 1: L'utilisateur peut s'inscrire avec un e-mail, un nom d'utilisateur et un mot de passe.
-    - CA 2: L'utilisateur peut se connecter avec son e-mail et son mot de passe.
-    - CA 3: Les mots de passe sont stockés de manière sécurisée (par exemple, avec un hachage).
+### 4. Build Tailwind CSS
 
-### Epic 2 : Organisation & Tri
+```bash
+docker compose exec php php bin/console tailwind:build
+```
 
-- User Story 1 : En tant qu'utilisateur, je veux créer des dossiers thématiques afin de regrouper mes tâches par projet.
-    - CA 1 : Un dossier créé doit être nommé.
-    - CA 2 : Je peux associer une couleur à un dossier.
+## ▶️ Open the app
 
-- User Story 2 : En tant qu'utilisateur, je veux filtrer mes tâches par statut ou par priorité afin de me concentrer sur l'essentiel.
-    - CA 1 : Je peux filtrer les tâches par statut (en cours, terminée, archivée).
-    - CA 2 : Je peux filtrer les tâches par priorité (urgent, important, normal).
+```
+http://localhost:8080
+```
 
+## ⏹️ Stop the app
 
-## Cahier des charges non fonctionnel (technique et implémentation)
+```bash
+docker compose down
+```
 
+## 🗑️ Remove containers and volumes
 
-## UML
-
-### EntityRelation
-```mermaid
-erDiagram
-    User{
-        int id PK
-        string email "UNIQUE"
-        string username "UNIQUE"
-        string password
-    }
-    Task{
-        int id PK
-        title string "UNIQUE"
-        status STATUS_ENUM
-        isPinned bool
-    }
-    Priority{
-        int id PK
-        string level "UNIQUE"
-    }
-    Folder{
-        int id PK
-        string name "UNIQUE"
-    }
-    
-    STATUS_ENUM{
-        pending string
-        completed string
-        archived string
-    }
-    
-    Task }o--o| Priority : has
-    User ||--o{ Task : owns
-    User ||--o{ Folder : owns
-    Folder |o--o{ Task : contains
+```bash
+docker compose down -v
 ```
